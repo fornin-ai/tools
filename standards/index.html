@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EP Standards Control Catalog</title>
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #f4f4f4; }
+    tr:hover { background: #f9f9f9; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>EP Standards Control Catalog</h2>
+
+<input type="file" id="upload" accept=".xlsx, .xls" />
+
+<table id="table">
+<thead>
+  <tr>
+    <th onclick="sortBy('Control ID')">Control ID ⬍</th>
+    <th onclick="sortBy('Control Name')">Control Name ⬍</th>
+    <th onclick="sortBy('Control Category')">Category ⬍</th>
+    <th onclick="sortBy('Referenced Standard(s)')">Standard ⬍</th>
+    <th onclick="sortBy('Standard Article Reference')">Reference ⬍</th>
+  </tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<script src="app.js"></script>
+</body>
+</html>
