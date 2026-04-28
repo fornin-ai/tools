@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ISO Controls Viewer</title>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+body { font-family: Arial; margin:20px; }
+td { vertical-align: top; white-space: normal; }
+.desc, .purpose { max-width: 400px; }
+</style>
+</head>
+<body>
+
+<h2>ISO 27002 Controls</h2>
+
+<input type="file" id="fileInput" /><br><br>
+
+<table id="controls" class="display" style="width:100%"></table>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', function(e){
+
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!file.name.match(/\.(xlsx|xls)$/i)) {
+    alert("Invalid file type");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(evt){
+
+    const wb = XLSX.read(new Uint8Array(evt.target.result), {type:'array'});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const raw = XLSX.utils.sheet_to_json(ws, {header:1});
+
+    const dataRows = raw.slice(2);
+
+    function safe(val){
+      return (val || "").toString().slice(0, 5000);
+    }
+
+    const data = dataRows.map(r => ({
+      Control: safe(r[0]),
+      Theme: safe(r[1]),
+      Name: safe(r[2]),
+      Description: safe(r[3]),
+      Purpose: safe(r[4])
+    }));
+
+    $('#controls').DataTable({
+      destroy: true,
+      data: data,
+      columns: [
+        { title:"Control", data:"Control", render: $.fn.dataTable.render.text() },
+        { title:"Theme", data:"Theme", render: $.fn.dataTable.render.text() },
+        { title:"Control Name", data:"Name", render: $.fn.dataTable.render.text() },
+        { title:"Description", data:"Description", className:"desc", render: $.fn.dataTable.render.text() },
+        { title:"Purpose", data:"Purpose", className:"purpose", render: $.fn.dataTable.render.text() }
+      ],
+      scrollX: true
+    });
+
+  };
+
+  reader.readAsArrayBuffer(file);
+
+});
+</script>
+
+</body>
+</html>
